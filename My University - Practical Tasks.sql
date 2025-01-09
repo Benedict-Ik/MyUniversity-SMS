@@ -1,35 +1,3 @@
--- Display all students that failed a course
-SELECT 
-GB.StudentID AS 'StudentID',
-CONCAT(S.LastName, ' ', S.LastName) AS 'Student Name',
-C.ID AS CourseID,
-S.Level AS 'Level',
-GB.CA AS CA,
-GB.Exam AS Exam,
-GB.MarksObtained AS 'Total Score',
-GB.Grade AS Grade,
-C.Code AS 'Course Code',
-C.Name AS 'Course',
-D.ID AS DeptID,
-D.Name AS Department
-FROM GRADEBOOK GB
-INNER JOIN STUDENTS S ON S.ID = GB.StudentID
-INNER JOIN COURSES C ON C.ID = GB.CourseID
-INNER JOIN DEPARTMENT D ON D.ID = S.DepartmentID
-WHERE Grade = 'F'
---WHERE Exam < 30
-
-
--- Display all courses alongide the departments they are offered in
-SELECT  
-C.ID AS CourseID,
-C.Code AS 'Course Code',
-C.Name AS Course,
-D.ID AS DeptID,
-D.Name AS Department
-FROM COURSES C INNER JOIN DEPARTMENT D ON D.ID = C.DepartmentID
-
-
 -- BEGIN
 -- 1.	Determine the lecturer taking what course
 SELECT 
@@ -266,6 +234,89 @@ D.Name AS Department
 FROM STUDENTS S
 INNER JOIN DEPARTMENT D ON S.DepartmentID = D.ID
 WHERE D.Name = 'Physics'
+
+
+
+-- 15.	Display all students that had an F in any course
+SELECT 
+GB.StudentID AS 'StudentID',
+CONCAT(S.LastName, ' ', S.LastName) AS 'Student Name',
+C.ID AS CourseID,
+S.Level AS 'Level',
+GB.CA AS CA,
+GB.Exam AS Exam,
+GB.MarksObtained AS 'Total Score',
+GB.Grade AS Grade,
+C.Code AS 'Course Code',
+C.Name AS 'Course',
+D.ID AS DeptID,
+D.Name AS Department
+FROM GRADEBOOK GB
+INNER JOIN STUDENTS S ON S.ID = GB.StudentID
+INNER JOIN COURSES C ON C.ID = GB.CourseID
+INNER JOIN DEPARTMENT D ON D.ID = S.DepartmentID
+WHERE Grade = 'F'
+
+
+--16.	 Display all courses alongside the departments they are offered in
+SELECT  
+C.ID AS CourseID,
+C.Code AS 'Course Code',
+C.Name AS Course,
+D.ID AS DeptID,
+D.Name AS Department
+FROM COURSES C INNER JOIN DEPARTMENT D ON D.ID = C.DepartmentID
+
+
+--17.	Find students who entered the school after a specific date.
+SELECT * 
+FROM STUDENTS
+WHERE DateOfEntry > '2020-09-01'
+
+
+--18.	Retrieve students who are at a specific level (e.g., 200 Level).
+SELECT *
+FROM STUDENTS
+WHERE LEVEL = 200
+
+
+--19.	List all courses that do not have any students enrolled.
+SELECT 
+    C.Code AS CourseCode,
+    C.Name AS CourseName,
+    C.Units AS CourseUnits,
+    D.Name AS DepartmentName
+FROM 
+    COURSES C
+INNER JOIN 
+    DEPARTMENT D ON C.DepartmentID = D.ID
+LEFT JOIN 
+    STUDENT_COURSE SC ON C.ID = SC.CourseID
+WHERE 
+    SC.StudentID IS NULL;
+
+
+--20.	Find students enrolled in two or more courses taught by the same lecturer.
+SELECT 
+    S.ID AS StudentID,
+    CONCAT(S.LastName, ' ', S.OtherNames) AS FullName,
+    L.ID AS LecturerID,
+    CONCAT(L.FirstName, ' ', L.LastName) AS LecturerName,
+    COUNT(DISTINCT SC.CourseID) AS NumberOfCourses
+FROM 
+    STUDENT_COURSE SC
+INNER JOIN 
+    COURSES C ON SC.CourseID = C.ID
+INNER JOIN 
+    LECTURER_COURSE LC ON C.ID = LC.CourseID
+INNER JOIN 
+    LECTURERS L ON LC.LecturerID = L.ID
+INNER JOIN 
+    STUDENTS S ON SC.StudentID = S.ID
+GROUP BY 
+    S.ID, CONCAT(S.LastName, ' ', S.OtherNames), L.ID, CONCAT(L.FirstName, ' ', L.LastName)
+HAVING 
+    COUNT(DISTINCT SC.CourseID) >= 2;
 
 
 -- 
