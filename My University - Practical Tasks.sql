@@ -365,3 +365,23 @@ INNER JOIN DEPARTMENT D ON FACULTY.ID = D.FacultyID
 
 
 -- 26.	Retrieve all courses taught by a specific lecturer.
+SELECT 
+CONCAT(L.FirstName, ' ', L.LastName) AS Lecturer,
+C.Code AS CourseCode,
+C.Name AS Course
+FROM Lecturer_Course LC
+INNER JOIN LECTURERS L ON LC.LecturerID = L.ID
+INNER JOIN COURSES C ON LC.CourseID = C.ID
+WHERE L.ID = 22
+
+
+-- 27.	List all lecturers in a specific department.
+SELECT 
+CONCAT(L.FirstName, ' ', L.LastName) AS Lecturer,
+D.Name AS Department
+FROM LECTURERS L
+INNER JOIN DEPARTMENT D ON L.DepartmentID = D.ID
+WHERE D.Name LIKE 'MECH%'
+
+
+-- 28.	Calculate the pass rate for a specific course in a session and semester.
