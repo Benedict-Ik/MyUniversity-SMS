@@ -319,4 +319,49 @@ HAVING
     COUNT(DISTINCT SC.CourseID) >= 2;
 
 
--- 
+-- 21.	Retrieve all courses offered by a specific department.
+SELECT
+C.Code, C.Name, C.Units, D.Name
+FROM COURSES C
+INNER JOIN DEPARTMENT D ON C.DepartmentID = D.ID
+WHERE Code LIKE 'CSE%'
+
+
+--22.	List all students enrolled in a particular course.
+SELECT
+CONCAT(S.LastName, ' ', S.OtherNames),
+S.Level, C.Code, C.Name, C.Units
+FROM STUDENT_COURSE SC
+INNER JOIN STUDENTS S ON SC.StudentID = S.ID
+INNER JOIN COURSES C ON SC.CourseID = C.ID
+WHERE C.Code = 'CSE-513'
+
+
+-- 23.	Retrieve all departments under a specific faculty
+SELECT * FROM DEPARTMENT D
+INNER JOIN FACULTY F ON D.FacultyID = F.ID
+WHERE F.Name = 'Engineering'
+
+
+--24.	Retrieve a count of students in each department for a specific faculty.
+SELECT 
+COUNT(S.ID) AS StudentCount,
+D.Name AS Department
+
+FROM STUDENTS S
+INNER JOIN DEPARTMENT D ON S.DepartmentID = D.ID
+INNER JOIN FACULTY F ON D.FacultyID = F.ID
+WHERE F.Name LIKE '%Sciences'
+GROUP BY D.Name
+ORDER BY COUNT(S.ID)
+
+
+-- 25.	List all faculties along with their departments.
+SELECT
+FACULTY.Name AS Faculty,
+D.Name AS Department
+FROM FACULTY
+INNER JOIN DEPARTMENT D ON FACULTY.ID = D.FacultyID
+
+
+-- 26.	Retrieve all courses taught by a specific lecturer.
