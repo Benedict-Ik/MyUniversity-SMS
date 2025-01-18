@@ -225,7 +225,6 @@ WHERE
     S.MatricNumber IS NULL
 
 
-
 -- 14.	List all students in a specific department.
 SELECT 
 CONCAT(S.LastName, ' ', S.OtherNames) AS FullName,
@@ -234,7 +233,6 @@ D.Name AS Department
 FROM STUDENTS S
 INNER JOIN DEPARTMENT D ON S.DepartmentID = D.ID
 WHERE D.Name = 'Physics'
-
 
 
 -- 15.	Display all students that had an F in any course
@@ -384,4 +382,63 @@ INNER JOIN DEPARTMENT D ON L.DepartmentID = D.ID
 WHERE D.Name LIKE 'MECH%'
 
 
--- 28.	Calculate the pass rate for a specific course in a session and semester.
+-- 28.	Calculate the pass rate for all 100L course in a session and semester.
+SELECT 
+    C.Code AS CourseCode,
+    C.Name AS CourseName,
+    SESSION.Name AS SessionName,
+    SEMESTER.Name AS SemesterName,
+    COUNT(CASE WHEN GB.MarksObtained > 50 THEN 1 END) AS PassCount,
+    COUNT(GB.StudentID) AS TotalStudents,
+    CAST(
+        (COUNT(CASE WHEN GB.MarksObtained > 50 THEN 1 END) * 100.0) / 
+        NULLIF(COUNT(GB.StudentID), 0) AS DECIMAL(10, 2)
+    ) AS PassRatePercentage
+FROM 
+    GRADEBOOK GB
+INNER JOIN 
+    COURSES C ON GB.CourseID = C.ID
+INNER JOIN 
+    STUDENT_COURSE SC ON GB.StudentID = SC.StudentID AND GB.CourseID = SC.CourseID
+INNER JOIN 
+    SESSION_SEMESTER SS ON SC.SessionID = SS.SessionID AND SC.SemesterID = SS.SemesterID
+INNER JOIN 
+    SESSION ON SS.SessionID = SESSION.ID
+INNER JOIN 
+    SEMESTER ON SS.SemesterID = SEMESTER.ID
+WHERE 
+    --C.Code = 'CHE-211' AND 
+	C.Code LIKE '[A-Z][A-Z][A-Z]-1%' AND 
+    SESSION.Name = '2024/2025' AND 
+    SEMESTER.Name = 'First Semester'
+GROUP BY 
+    C.Code, C.Name, SESSION.Name, SEMESTER.Name;
+
+
+/*29.	Generate a report of students' performance by department, showing the number of 
+students in each grade category (A, B, C, D, F) for all 200L courses in Faculty of Science. */
+SELECT 
+    D.Name AS DepartmentName,
+    COUNT(CASE WHEN GB.Grade = 'A' THEN 1 END) AS GradeA,
+    COUNT(CASE WHEN GB.Grade = 'B' THEN 1 END) AS GradeB,
+    COUNT(CASE WHEN GB.Grade = 'C' THEN 1 END) AS GradeC,
+    COUNT(CASE WHEN GB.Grade = 'D' THEN 1 END) AS GradeD,
+    COUNT(CASE WHEN GB.Grade = 'F' THEN 1 END) AS GradeF,
+	COUNT(GB.StudentID) AS TotalStudents
+FROM 
+    GRADEBOOK GB
+INNER JOIN 
+    COURSES C ON GB.CourseID = C.ID
+INNER JOIN 
+    DEPARTMENT D ON C.DepartmentID = D.ID
+INNER JOIN 
+    FACULTY F ON D.FacultyID = F.ID
+INNER JOIN 
+    STUDENTS S ON GB.StudentID = S.ID
+WHERE 
+    F.Name = 'Physical Sciences' AND 
+    C.Code LIKE '[A-Z][A-Z][A-Z]-1%'
+GROUP BY 
+    D.Name
+ORDER BY 
+    D.Name;

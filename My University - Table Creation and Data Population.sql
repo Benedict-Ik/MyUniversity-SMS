@@ -1,5 +1,7 @@
 -- Creating database
 CREATE DATABASE [My University]
+
+-- Optional: Delete Database
 DROP DATABASE [My University]
 
 -- CREATING TABLES
@@ -38,8 +40,7 @@ CREATE TABLE COURSES(
 	FOREIGN KEY (DepartmentID) REFERENCES Department(ID)
 )
 
-SELECT * FROM COURSES
-SELECT * FROM STUDENT_COURSE
+
 -- Creating Student_Courses Table
 -- Tracks the relationship between students and courses (enrollment data).
 CREATE TABLE STUDENT_COURSE(
@@ -53,6 +54,7 @@ CREATE TABLE STUDENT_COURSE(
 	FOREIGN KEY (StudentID) REFERENCES Students(ID),
 	FOREIGN KEY (CourseID) REFERENCES Courses(ID)
 )
+
 
 -- Creating Faculty Table
 CREATE TABLE FACULTY(
@@ -85,11 +87,13 @@ CREATE TABLE SESSION(
 	EndDate date NOT NULL
 )
 
+
 -- Creating Semester Table
 CREATE TABLE SEMESTER(
 	ID INT PRIMARY KEY IDENTITY(1,1),
 	Name VARCHAR(20) NOT NULL
 )
+
 
 -- Creating Session_Semester Table
 CREATE TABLE SESSION_SEMESTER(
@@ -111,7 +115,7 @@ CREATE TABLE LECTURERS(
 	DepartmentID INT NOT NULL,
 	FOREIGN KEY (DepartmentID) REFERENCES Department(ID)
 )
-SELECT * FROM LECTURERS
+
 
 -- Creating Lecturer_Course Table
 CREATE TABLE Lecturer_Course(
@@ -142,8 +146,9 @@ CREATE TABLE ATTENDANCE(
 )
 */
 
-DROP TABLE GRADEBOOK
-SELECT * FROM GRADEBOOK
+DROP TABLE ATTENDANCE
+
+
 -- Creating Gradebook Table
 CREATE TABLE GRADEBOOK(
 	ID INT PRIMARY KEY IDENTITY(1,1),
@@ -212,7 +217,6 @@ INSERT INTO DEPARTMENT (Name, FacultyID) VALUES
 -- Deleting all records from STUDENTS table and resetting auto-increment counter
 -- Delete all records from the table
 DELETE FROM STUDENTS;
-
 -- Reset the auto-increment counter
 DBCC CHECKIDENT ('STUDENTS', RESEED, 0);
 
@@ -366,7 +370,7 @@ VALUES
 (NULL, 'PHY1000033', 'French', 'Johnny', 'M', '2001-09-15', '2020-09-05', '08025345778', '501 French Street', 'johnnyfrench@example.com', 13, 300)
 -- Above should throw a duplicate key value error
 
-SELECT * FROM DEPARTMENT
+
 -- Inserting into COURSES table
 /* 
 	Obeys the following rules:
@@ -630,8 +634,6 @@ VALUES
 ('CIV-524', 'Advanced Soil Mechanics', 3, 4),
 ('CIV-525', 'Industry Internship', 6, 4);
 
-SELECT * FROM COURSES
-ORDER BY ID DESC
 -- Chemical Engineering Department Courses
 INSERT INTO COURSES (Code, Name, Units, DepartmentID) 
 VALUES
@@ -695,8 +697,6 @@ VALUES
 ('CHE-524', 'Special Topics in Process Engineering', 3, 5),
 ('CHE-525', 'Industry Internship', 6, 5);
 
-SELECT * FROM COURSES
-ORDER BY ID DESC
 -- Physics Department Courses
 INSERT INTO COURSES (Code, Name, Units, DepartmentID)
 VALUES
@@ -981,12 +981,8 @@ VALUES
 ('GEO-525', 'Sustainable Resource Development', 3, 10);
 
 
-SELECT * FROM COURSES
-INNER JOIN DEPARTMENT ON DEPARTMENT.ID = COURSES.DepartmentID
-WHERE DepartmentID = 11
-
 SELECT * FROM LEVEL
--- Inserting into CLASS Table
+-- Inserting into LEVEL Table
 INSERT INTO LEVEL(Code, Title)
 VALUES
 (100, '100 Level'),
@@ -1073,6 +1069,8 @@ SELECT * FROM COURSES WHERE DepartmentID = 8
 SELECT SC.StudentID, SC.CourseID, SC.SessionID, SC.SemesterID, S.Level AS 'Student Level', C.Code AS 'Course Code', C.Name AS C_Name, C.DepartmentID AS Dept_ID
 FROM STUDENT_COURSE SC INNER JOIN COURSES C ON SC.CourseID = C.ID INNER JOIN STUDENTS S ON S.ID = SC.StudentID
 ORDER BY StudentID DESC
+
+
 -- Determining table structure
 EXEC sp_help STUDENTS
 
@@ -2581,9 +2579,11 @@ INSERT INTO STUDENT_COURSE (StudentID, CourseID, SessionID, SemesterID) VALUES
 (100, (SELECT ID FROM COURSES WHERE Code = 'GEO-424'), 1, 2), 
 (100, (SELECT ID FROM COURSES WHERE Code = 'GEO-425'), 1, 2);
 
+-- Deleting records and resetting counter
 SELECT * FROM LECTURERS
 DELETE FROM LECTURERS
 DBCC CHECKIDENT ('LECTURERS', RESEED, 0);
+
 
 -- Inserting into Lecturers Table
 INSERT INTO LECTURERS (FirstName, LastName, Email, Phone, DepartmentID)
