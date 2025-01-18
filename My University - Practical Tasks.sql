@@ -407,7 +407,6 @@ INNER JOIN
 INNER JOIN 
     SEMESTER ON SS.SemesterID = SEMESTER.ID
 WHERE 
-    --C.Code = 'CHE-211' AND 
 	C.Code LIKE '[A-Z][A-Z][A-Z]-1%' AND 
     SESSION.Name = '2024/2025' AND 
     SEMESTER.Name = 'First Semester'
@@ -437,7 +436,7 @@ INNER JOIN
     STUDENTS S ON GB.StudentID = S.ID
 WHERE 
     F.Name = 'Physical Sciences' AND 
-    C.Code LIKE '[A-Z][A-Z][A-Z]-1%'
+    C.Code LIKE '[A-Z][A-Z][A-Z]-2%'
 GROUP BY 
     D.Name
 ORDER BY 
