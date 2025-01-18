@@ -416,7 +416,7 @@ GROUP BY
 
 
 /*29.	Generate a report of students' performance by department, showing the number of 
-students in each grade category (A, B, C, D, F) for all 200L courses in Faculty of Science. */
+students in each grade category (A, B, C, D, F) for all 200L courses in Faculty of Physical Sciences. */
 SELECT 
     D.Name AS DepartmentName,
     COUNT(CASE WHEN GB.Grade = 'A' THEN 1 END) AS GradeA,
