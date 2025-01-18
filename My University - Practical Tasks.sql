@@ -391,7 +391,7 @@ SELECT
     COUNT(CASE WHEN GB.MarksObtained > 50 THEN 1 END) AS PassCount,
     COUNT(GB.StudentID) AS TotalStudents,
     CAST(
-        (COUNT(CASE WHEN GB.MarksObtained > 50 THEN 1 END) * 100.0) / 
+        (COUNT(CASE WHEN GB.MarksObtained > 44 THEN 1 END) * 100.0) / 
         NULLIF(COUNT(GB.StudentID), 0) AS DECIMAL(10, 2)
     ) AS PassRatePercentage
 FROM 
