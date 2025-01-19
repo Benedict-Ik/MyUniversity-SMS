@@ -72,7 +72,7 @@ CREATE TABLE DEPARTMENT(
 )
 
 
--- Creating Class Table
+-- Creating Level Table
 CREATE TABLE LEVEL(
 	Code INT PRIMARY KEY,
 	Title VARCHAR(10) NOT NULL
